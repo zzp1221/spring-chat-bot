@@ -3,6 +3,7 @@ package com.example.springchatbot.controller;
 import com.example.springchatbot.entity.ChatInfo;
 import com.example.springchatbot.entity.messageVO;
 import com.example.springchatbot.repository.ChatHistory;
+import com.example.springchatbot.service.TimeService;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.memory.ChatMemoryRepository;
@@ -34,6 +35,7 @@ public class ChatController {
     public Flux<String> chat(String prompt,String chatId) {
         chatHistory.save(chatId, prompt);
         return this.chatClient.prompt()
+                .tools(new TimeService())
                 .user(prompt)
                 .advisors(a -> a.param(ChatMemory.CONVERSATION_ID, chatId))
                 .stream()
